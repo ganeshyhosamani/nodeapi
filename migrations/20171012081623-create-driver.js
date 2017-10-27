@@ -41,6 +41,12 @@ module.exports = {
       vehical_number: {
         type: Sequelize.STRING
       },
+      email_verification_code: {
+        type: Sequelize.STRING
+      },
+      email_verifyed: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -48,6 +54,15 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      UserId: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
       }
     });
   },

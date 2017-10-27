@@ -8,6 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      tripKey: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING
+      },
       from: {
         type: Sequelize.STRING
       },
@@ -48,6 +53,13 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      driverId: {
+        type: Sequelize.STRING
+      },
+      passengerId: {
+        allowNull: false,
+        type: Sequelize.STRING,
       }
     });
   },

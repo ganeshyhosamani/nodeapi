@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   var Trip = sequelize.define('Trip', {
     from: DataTypes.STRING,
+    tripKey: DataTypes.STRING,
     to: DataTypes.STRING,
     from_lat: DataTypes.INTEGER,
     from_lon: DataTypes.INTEGER,
@@ -10,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     moneyCollected: DataTypes.BOOLEAN,
     fare: DataTypes.DOUBLE,
     state: DataTypes.STRING,
+    passengerId: DataTypes.STRING,
     passengersRating: DataTypes.DOUBLE,
     driversRating: DataTypes.DOUBLE
   }, {
@@ -21,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Trip.associate = function (models) {
-    Trip.belongsTo(models.User, { as: 'driver'});
-    Trip.belongsTo(models.User, { as: 'passenger' });
+  //  Trip.belongsTo(models.User, { as: 'driver',key:'uid'});
+  //  Trip.belongsTo(models.User, { as: 'passenger', key: 'uid' });
   }
 
   return Trip;

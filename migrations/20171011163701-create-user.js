@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      uid: {
+        type: Sequelize.STRING
+      },
       firstName: {
         type: Sequelize.STRING
       },
@@ -20,8 +23,8 @@ module.exports = {
       },
       email: {
         unique: true,
+        allowNull: false,
         type: Sequelize.STRING,
-
       },
       phone: {
         type: Sequelize.STRING
@@ -34,6 +37,10 @@ module.exports = {
       },
       disabled: {
         type: Sequelize.BOOLEAN
+      },
+      active_profile_pic: {
+        unique: true,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

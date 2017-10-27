@@ -23,13 +23,14 @@ router.get('/', function (req, res, next) {
     page = parseInt(req.params.page);
   offset = limit * (page - 1);
 
-  models.User.findAll({
-    attributes: { exclude: ['password'] },
+  models.Driver.findAll({
+    attributes: { exclude: ['email_verification_code'] },
     limit: limit,
     offset: offset,
-    $sort: { id: 1 }
+    $sort: { id: 1 },
+    include: [{ model: models.User}]
   }).then(function (user) {
-    models.User.count().then(function (count) {
+    models.Driver.count().then(function (count) {
       res.send({ total: count, records: user });
     })
   })
@@ -37,21 +38,20 @@ router.get('/', function (req, res, next) {
 
 router.post('/create', function (req, res, next) {
   console.log(req.params)
-  console.log(req.body)
+  console.log(req.query)
 
-  var utf8arr = CryptoJS.enc.Utf8.parse(req.body.password);
+  var utf8arr = CryptoJS.enc.Utf8.parse("password");
   var hash = CryptoJS.SHA256(utf8arr);
   var base64 = CryptoJS.enc.Base64.stringify(hash);
 
   models.User.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    firstName: req.query.firstName,
+    lastName: req.query.lastName,
     password: base64,
-    email: req.body.email,
-    role:'rider',
-    phone: req.body.phone,
-    role: req.body.role,
-    uid: req.body.uid,
+    email: req.query.email,
+    phone: req.query.phone,
+    role: req.query.role,
+    uid: req.query.uid,
     disabled: false
   }).then(function (user) {
     res.send(user);
@@ -75,9 +75,10 @@ router.post('/create_driver', function (req, res, next) {
     email: req.body.email,
     phone: req.body.phone,
     role:'driver',
-    disabled: false
+    disabled: false,
+    uid: req.body.uid,
+   
   }).then(function (user) {
-    console.log('user--------------- created ---------------')
     models.Driver.create({
       UserId: user.id,
       document_verification: 'pending',
@@ -91,7 +92,7 @@ router.post('/create_driver', function (req, res, next) {
         subject: 'noreplay Conformation mail',
         html: 'Conformation sent from ridon <a href="google.com">confirmation Link</a>'
       };
-
+if(false)
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
           console.log(error);
@@ -138,13 +139,7 @@ router.post('/test',function (req, res, next) {
   res.send(a);
 });
 router.get('/:id', function (req, res, next) {
-  console.log(req.query)
-
-  models.User.find({
-    attributes: { exclude: ['password'] },
-   where:{uid:req.params.id}
-  }).then(function (user) {
-    res.send(user );
-  })
+  console.log(req.params)
+  res.send('respond with a resource');
 });
 module.exports = router;

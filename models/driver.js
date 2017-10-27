@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
     insurance_url: DataTypes.STRING,
     model_year: DataTypes.STRING,
     vehical_model: DataTypes.STRING,
-    vehical_number: DataTypes.STRING
+    vehical_number: DataTypes.STRING,
+    email_verifyed: DataTypes.BOOLEAN,
+    email_verification_code: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {

@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define('User', {
     firstName: DataTypes.STRING,
+    uid: DataTypes.STRING,
     lastName: DataTypes.STRING,
     password: DataTypes.STRING,
     email: DataTypes.STRING,
@@ -9,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
     role: DataTypes.STRING,
     disabled: DataTypes.BOOLEAN,
+    active_profile_pic: DataTypes.INTEGER,
   }, {
     classMethods: {
       associate: function(models) {
@@ -16,5 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  User.associate = function (models) {
+    User.hasMany(models.Profile_pic, { as: 'profile_pic' })
+  }
+
   return User;
 };

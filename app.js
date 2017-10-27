@@ -10,10 +10,12 @@ var Strategy = require('passport-local').Strategy;
 const passport = require('passport')
 const session = require('express-session')
 var CryptoJS = require("crypto-js");
-
+var cors = require('cors')
 var index = require('./routes/index');
 var users = require('./routes/users');
+var drivers = require('./routes/drivers');
 var trips = require('./routes/trips');
+var UsersController = require('./controllers/Users');
 
 
 var app = express();
@@ -29,15 +31,12 @@ passport.use(new Strategy(
       var utf8arr = CryptoJS.enc.Utf8.parse(password);
       var hash = CryptoJS.SHA256(utf8arr);
       var base64 = CryptoJS.enc.Base64.stringify(hash);
-      console.log(cb)
-      console.log(!(user.password === base64))
-      console.log(!user.password === base64)
-      console.log(user.password)
+     
       // if (err) { return done(err); }
-      if (!user) { return cb(null, false); }
+      if (!user) { return cb(null, false, { message: 'password not matching' }); }
       if (!(user.password === base64)) {
         console.log('login failed')
-        return cb(null, { message:'password not matching'});
+        return cb(null, false,{ message:'password not matching'});
       }
       
       return cb(null, user.dataValues);
@@ -49,9 +48,7 @@ passport.serializeUser(function (user, cb) {
 });
 
 passport.deserializeUser(function (id, cb) {
-  console.log('id, cb', id)
-  models.User.findOne({ where: { id: id } }).then(function (user) {
-    console.log('id, cb', user)
+  models.User.findOne({ attributes: { exclude: ['password'] }, where: { id: id } }).then(function (user) {
     if (!user) { return cb(null, {}); }
     return cb(null, user.dataValues);
   })
@@ -72,12 +69,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('express-session')({ secret: 'rkrb', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(cors())
 app.use('/', index);
 app.use('/users', users);
+app.use('/drivers', drivers);
 app.use('/trips', trips);
 
-app.get('/login',
+app.all('/login',
   passport.authenticate('local', { failWithError: true }),
   function (req, res) {
 
@@ -90,10 +88,8 @@ app.get('/login',
 
   });
 
-app.get('/getUser', function (req, res) {
-
-  res.send(req.user);
-});
+app.get('/getUser', UsersController.getUser);
+app.get('/getDriver/:id', UsersController.getDriver);
 
 
 app.get('/logout',
